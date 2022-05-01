@@ -1,0 +1,324 @@
+---
+title: What Made The Detroit "Bad Boy" Pistons So Bad?
+author: Josh Lill
+date: '2022-04-26'
+slug: what-made-the-detroit-bad-boy-pistons-so-bad
+categories: []
+tags: []
+---
+
+The Detroit "Bad Boy" Pistons.  Made up of Isiah Thomas, Bill Laimbeer, Dennis Rodman, John Salley, Joe Dumars and more, the fierce, two-time, back-to-back NBA champions from the "Motor City" ruled basketball in the late 1980s and early 1990s.  The combination of aggressive play on the court tied in with their superb defensive skills gave them the opportunity to take over the league with a new style of play, giving them the "Bad Boy" reputation.  
+
+Though, their playing style was not taken to by NBA fans and cities, besides Detroit, the Pistons were not trying to be crowd-pleasers.  Their unorthodox style of play was not considered "Showtime" like the Lakers nor mesmerizing like the Boston Celtics.  
+
+During their reign of the league, Detroit was in the top two for most wins in each of the two seasons they won titles.
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggrepel)
+library(scales)
+library(gt)
+library(ggalt)
+
+set.seed(1234)
+
+```
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+firstStandingslogs <- read_csv("Standings1989.csv") %>%
+  select(Team, Overall)
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+firstStandingslogs %>% 
+  gt() %>% 
+tab_header(
+  title = "Pistons Were Simply Too Much To Handle For The Rest Of The NBA.",
+  subtitle = "1988-89 NBA Standings; Detroit is in blue; NBA Finals Runner-Up is in red."
+) %>% tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left"),
+    locations = cells_title("title")
+  ) %>% tab_style(
+    style = cell_text(color = "blue", align = "left"),
+    locations = cells_title("subtitle")
+  ) %>%
+  tab_source_note(
+    source_note = md("**By:** Josh Lill  |  **Source:** [Basketball Reference](https://www.basketball-reference.com/leagues/NBA_1989_standings.html#all_expanded_standings)")
+  )%>%
+  tab_style(
+     locations = cells_column_labels(columns = everything()),
+     style = list(
+       cell_borders(sides = "bottom", weight = px(3)),
+       cell_text(weight = "bold", size=12)
+     )
+   )%>%
+  opt_row_striping() %>% 
+  opt_table_lines("none") %>%
+  tab_style(
+    style = list(
+      cell_fill(color = "blue")
+      ),
+    locations = cells_body(
+      rows = Team == "Detroit Pistons")
+  )  %>%
+  tab_style(
+    style = list(
+      cell_fill(color = "red")
+      ),
+    locations = cells_body(
+      rows = Team == "Los Angeles Lakers")
+  )
+```
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+secondStandingslogs <- read_csv("1990standingsnew.csv") %>%
+  select(Team, Overall)
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+secondStandingslogs %>% 
+  gt() %>% 
+tab_header(
+  title = "Pistons and Blazers Neck-And-Neck For The Second Best Record.",
+  subtitle = "1989-90 NBA Standings; Detroit is in blue; NBA Finals Runner-Up is in red."
+) %>% tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left"),
+    locations = cells_title("title")
+  ) %>% tab_style(
+    style = cell_text(color = "blue", align = "left"),
+    locations = cells_title("subtitle")
+  ) %>%
+  tab_source_note(
+    source_note = md("**By:** Josh Lill  |  **Source:** [Basketball   Reference](https://www.basketball-reference.com/leagues/NBA_1990_standings.html#all_expanded_standings)") 
+  )%>%
+  tab_style(
+     locations = cells_column_labels(columns = everything()),
+     style = list(
+       cell_borders(sides = "bottom", weight = px(3)),
+       cell_text(weight = "bold", size=12)
+     )
+   )%>%
+  opt_row_striping() %>% 
+  opt_table_lines("none") %>%
+  tab_style(
+    style = list(
+      cell_fill(color = "blue")
+      ),
+    locations = cells_body(
+      rows = Team == "Detroit Pistons")
+  )  %>%
+  tab_style(
+    style = list(
+      cell_fill(color = "red")
+      ),
+    locations = cells_body(
+      rows = Team == "Portland Trail Blazers")
+  )
+```
+
+The Pistons won back-to-back titles in the 1988-89 and 1989-90 seasons.  Detroit's blue-collared and tough basketball philosophy, preached to them by the late, great, Chuck Daly, gave them an edge in a lot of areas that teams in the NBA didn't primarily focus on.  
+
+One of those areas: rebounding.
+
+It's such a big part of the game of basketball that you can't really win without it.  However, the saying does go, "Offense wins you games, defense wins you championships."  This was the reason they were so utterly dominant in the two seasons they won championships.  With their defense came their play on the glass.  Crashing the boards was what they did best.  
+
+They were top 10 in defensive rebounds and total rebounds in both of those seasons.  As a team that was in the bottom half of the league in points per game, their constant push to get boards gave them extra chances when, if rebounding wasn't such a big part of their game, they shouldn't have.  
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+
+pergamefirst <- read_csv("PerGameStats1988_89.csv")
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+firsttitlepergame <- pergamefirst %>% 
+  top_n(10, TRB)
+ 
+ggplot() + 
+  geom_point(data=pergamefirst, aes(x=TRB, y=PTS)) +
+  geom_smooth(data=pergamefirst, aes(x=TRB, y=PTS), method="lm") +
+  geom_point(data=pergamefirst, aes(x=TRB, y=PTS), color="black") +
+  geom_point(data=firsttitlepergame, aes(x=TRB, y=PTS), color="red" )+
+  geom_text_repel(
+    data=firsttitlepergame,
+    aes(x=TRB, y=PTS, label=Team)
+  ) +
+  labs(title="The Pistons Crash The Boards Despite Low Scoring.", subtitle="1988-89 Top 10 Total Rebounding Teams.", x="Total Rebounds Per Game", y="Points Per Game", caption="By. Josh Lill | Source: basketball-reference.com") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )
+
+```
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+pergamessecond <- read_csv("PerGameStats1989_90.csv")
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+secondtitlepergame <- pergamessecond %>% 
+  top_n(10, TRB)
+ 
+ggplot() + 
+  geom_point(data=pergamessecond, aes(x=TRB, y=PTS)) +
+  geom_smooth(data=pergamessecond, aes(x=TRB, y=PTS), method="lm") +
+  geom_point(data=pergamessecond, aes(x=TRB, y=PTS), color="black") +
+  geom_point(data=secondtitlepergame, aes(x=TRB, y=PTS), color="red")+
+  geom_text_repel(
+    data=secondtitlepergame,
+    aes(x=TRB, y=PTS, label=Team)
+  ) +
+  labs(title="Detroit Able To Keep Up With The Best Rebounding Teams.", subtitle="1989-90 Top 10 Total Rebounding Teams.", x="Total Rebounds Per Game", y="Points Per Game", caption="By. Josh Lill | Source: basketball-reference.com") +
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )
+
+```
+Part of reason for their success here was Southeastern Oklahoma State University alumni, Dennis Rodman, and former Notre Dame Fightin' Irish big man, Bill Laimbeer, averaged a combined 38.3 rebounds per game in those two seasons they were champions.
+
+Not only were they locked in on grabbing boards off of the glass, but their defensive ratings in each of those two seasons were ranked third in the 1988-89 campaign with a defensive rating of 104.7 and second in the following year with a defensive rating of 103.5.
+
+Now, everyone is always talking about their stellar defensive play and how it carried their sub-par offense, which was the 10th lowest scoring offense in the 1988-89 season at 106.6 points per game and the ninth lowest in 1989-90 season with 104.3 points per game.  
+
+The other factor that the "Bad Boy" Pistons had on their side was the mental factor.
+
+The energy of the crowd at the Palace at Auburn Hills and the physicality and brute-force of nature that those Pistons were all helped them to be able to wear down their opponents and frustrate them with ease.  
+
+Detroit was top three in the NBA in total attendance in the two years they brought home the hardware.
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+attendance <- read_csv("NewAdvancedStats1988_89.csv")
+
+NBA <- attendance %>%
+  arrange(desc(`Attend.`)) %>%
+  top_n(26, `Attend.`)%>%
+  mutate(Team=gsub("\\*","",Team))
+
+Pistons <- NBA %>%
+  filter(Team=="Detroit Pistons")
+
+```
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ggplot() +
+  geom_bar(data=NBA, aes(x=reorder(Team, `Attend.`), weight=`Attend.`)) +
+  geom_bar(data=Pistons, aes(x=reorder(Team, `Attend.`), weight=`Attend.`), fill="red") +
+  scale_y_continuous(labels=comma) +
+  coord_flip() +
+  labs(title="Piston Faithful Showed Their Boys A Lot Of Love.", subtitle="1988-89 Total Attendance For Each Team.", x="Team", y="Attendance", caption="By. Josh Lill | Source: basketball-reference.com") + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14), 
+    plot.subtitle = element_text(size=12), 
+    panel.grid.minor = element_blank()
+    )
+```
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+attendanceagain <- read_csv("NewAdvancedStats1989_90.csv")
+
+NBAagain <- attendanceagain %>%
+  arrange(desc(`Attend.`)) %>%
+  top_n(26, `Attend.`) %>%
+  mutate(Team=gsub("\\*","",Team))
+
+Pistonsagain <- NBAagain %>%
+  filter(Team=="Detroit Pistons")
+```
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ggplot() +
+  geom_bar(data=NBAagain, aes(x=reorder(Team, `Attend.`), weight=`Attend.`)) +
+  geom_bar(data=Pistonsagain, aes(x=reorder(Team, `Attend.`), weight=`Attend.`), fill="red") +
+  scale_y_continuous(labels=comma) +
+  coord_flip() +
+  labs(title="The Palace Was Still Rocking The Following Year.", subtitle="1989-90 Total Attendance For Each Team.", x="Team", y="Attendance", caption="By. Josh Lill | Source: basketball-reference.com") + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14), 
+    plot.subtitle = element_text(size=12), 
+    panel.grid.minor = element_blank()
+    )
+```
+The exhilarating crowd only put fuel on the fire for the Pistons to play very aggressively.  Even if they were on the road, other fan bases despised them so much that those implications would often help them play even better.  Their play wouldn't necessarily be clean, however.
+
+Flagrant fouls would fly left and right and other teams' best players would be injured during games.  They would do anything in anyway to find a way to win.  For a great example, take a look at the Jordan Rules!
+
+Just as a team's fan base disliked the play of the Pistons, so did each team itself.  Detroit was fouled the second most during their 1989 title campaign and the most throughout their 1990 title run.
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+fouls <- read_csv("Fouls1988-89.csv")%>%
+  top_n(10, `OpponentPFagainst`)
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ggplot() + 
+  geom_dumbbell(
+    data=fouls, 
+    aes(y=Team, x=OpponentPFagainst, xend=TeamPF),
+    size = 2,
+    colour = "black",
+    colour_x = "blue",
+    colour_xend = "red")+
+  labs(title="Pistons Took A Beating By Other Teams.", subtitle="1988-89 Personal Fouls By Opponent in Blue, Team Personal Fouls in Red.", x="Personal Fouls Per Game", y="Team", caption="By. Josh Lill | Source: basketball-reference.com") + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 14), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )
+
+```
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ninetyfouls <- read_csv("Fouls1989-90.csv") %>%
+  top_n(10, `OpponentPFagainst`)
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ggplot() + 
+  geom_dumbbell(
+    data=ninetyfouls, 
+    aes(y=Team, x=OpponentPFagainst, xend=TeamPF),
+    size = 2,
+    colour = "black",
+    colour_x = "blue",
+    colour_xend = "red")+
+  labs(title="Detroit Not Treated Too Kindly By The Rest Of The NBA.", subtitle="1989-90 Personal Fouls By Opponent in Blue, Team Personal Fouls in Red.", x="Personal Fouls Per Game", y="Team", caption="By. Josh Lill | Source: basketball-reference.com") + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 14), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )
+
+
+```
+
+Detroit, from the Bad Boy era, eventually ended up having six players make the all-time top 125 for most personal fouls.
+
+Those players: James Edwards, Bill Laimbeer, Rick Mahorn, Isiah Thomas, Dennis Rodman and Daryl Dawkins.
+
+Looking back, Detroit made basketball tough.  Their hard-nosed grit and determination to win their own way and not the league's way set them apart from others.  They showed that you didn't necessarily need to be the best and flashiest offense to win.  Their defense and on-court antics helped make up for it.  
+
+It would be interesting to see how long their style of play would have lasted in today's NBA.
+
+Note: The code that made this blog possible can be found [here](hhttps://github.com/j-lill1102/Notebooks#readme).

@@ -1,2 +1,2 @@
-# Notebooks
-Notebooks for my Pistons blog post.
+#Notebook
+Detroit Pistons blog
